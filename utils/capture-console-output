@@ -1,0 +1,7 @@
+#!/bin/bash
+
+(
+  echo "<pre class=\"console\">"
+  $* | aha -b --no-header
+  echo "</pre>"
+) | perl -MHTML::Entities -pe 'encode_entities($_);'
