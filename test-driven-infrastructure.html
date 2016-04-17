@@ -61,25 +61,32 @@ class: center, middle
 
 with Puppet, Cucumber and Docker
 
-by Markus Benning
+*Markus Benning*
 
 ---
-
-# About me
-
-Name: Markus Benning
-TODO
-
----
-
+layout: false
+.left-column[
 # Agenda
+]
+.right-column[
+## Concepts
 
-1. Puppet
-  * What is Puppet
-  * Why Puppet?
-2. Test-Driven Infrastructure
-3. ...
+* Puppet
+* Test-Driven Infrastructure
+* Behavior-Driven Development
 
+## Toolchain
+
+* A toolchain for TDI
+
+## Hands on 
+
+* Build a simple webserver for serving a Docker Bamberg weblog
+
+## Goodies
+
+* Continuous Integration, Monitoring, Documentation, Checklists, Change Evidence build in!
+]
 ---
 class: center, middle
 # Puppet
@@ -334,6 +341,249 @@ sub add {
       &lt;span style=&quot;color:lime;&quot;&gt;Then &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the buffer must be &lt;/span&gt;88
 
 &lt;/pre&gt;
+---
+# BDD with Cucumber (why?)
+
+* With BDD we get an **executable specification** which could be used for
+all kind of **automated testing**.
+
+* It is writte in gherkin a (near) **human language** everyone involved
+should be able to understand.
+
+* Therefor it could be used as a **single point of truth** across Devs,
+Ops and Customers to **collaboratively work** on.
+
+* Every change starts (red state) and ends (green state)
+with the test specification. This keeps the **specification up to date**.
+---
+class: center, middle
+# The Toolchain
+---
+# The Toolchain
+
+## Environment
+
+* **Docker** to provide a virtual environment
+* The `benningm/puppet-base` image. Debian environment with our toolchain
+
+## Configuration
+
+* **Puppet** to apply configuration as defined in manifests
+* **librarian-puppet** to install our puppet module and its dependecies
+
+## Testing
+
+* **Test::BDD::Cucumber** a perl implementation of Cucumber
+* **Test::BDD::Infrastructure** collection of step definitions for TDI
+* **T:B:C:Harness::Html** to generate HTML test reports
+* **T:B:C:Harness::Nagios** to execute tests for nagios
+---
+class: center, middle
+# Hands on
+Build a simple weblog webserver
+---
+# Create an empty puppet module
+
+Puppet has command for generating a module skeleton:
+
+```shell
+$ puppet module generate benningm-docker_bamberg
+```
+
+Push it to your git repository server:
+
+```shell
+$ cd benningm-docker_bamberg
+$ git init
+$ git add .
+$ git commit -a -m 'check in of empty module skeleton'
+$ git remote add origin git@github.com:benningm/puppet-docker_bamberg.git
+$ git push -u origin master
+```
+
+The main class of your puppet module is defined in `manifests/init.pp`.
+Edit the description and documentation in this file and commit it:
+
+```shell
+$ git commit -a -m 'add description and usage of module'
+```
+.footnote[
+`benningm/puppet-docker_bamberg`:
+[4c1d0d6](https://github.com/benningm/puppet-docker_bamberg/commit/4c1d0d6369db5bfe501ae061bfe0769c468a6907)
+, [6c89882](https://github.com/benningm/puppet-docker_bamberg/commit/6c89882f1186ae14558cc505cd93cab2b647e8e1)
+]
+---
+# Build the docker image (Dockerfile)
+
+Fetch our puppet module and apply the its configuration:
+
+```Dockerfile
+FROM benningm/puppet-base:latest
+MAINTAINER Markus Benning <ich@markusbenning.de>
+
+ADD Puppetfile /etc/puppet/Puppetfile
+RUN cd /etc/puppet && librarian-puppet install --verbose
+
+ADD manifest.pp /etc/puppet/manifests/docker_bamberg.pp
+RUN /usr/local/bin/puppet-apply-wrapper /etc/puppet/manifests
+
+EXPOSE 80
+```
+The `puppet-apply-wrapper` script is just a wrapper around `puppet apply`
+with correct return values to indicate failure/success.
+
+We still have to create `Puppetfile` which configures `librarian-puppet`
+and `manifest.pp` for puppet.
+---
+# Build the docker image (Puppetfile)
+
+```Puppetfile
+forge "https://forgeapi.puppetlabs.com"
+
+mod "benningm/docker_bamberg",
+  :git => "https://github.com/benningm/puppet-docker_bamberg.git"
+
+```
+
+The first line tells `librarian-puppet` to fetch dependecies from the
+Puppet Forge.
+
+The second line installs our puppet module from our git repository.
+---
+# Build the docker image (manifest.pp)
+
+```puppet
+class { 'docker_bamberg':
+}
+```
+The `manifest.pp` file just tells puppet to execute the class of our
+module which has no parameters.
+
+Create a git repository and push everything to your repository server.
+
+.footnote[
+`benningm/docker-docker-bamberg`:
+[40a1dae](https://github.com/benningm/docker-docker-bamberg/commit/40a1daeba7dc0c93a04ceccf40f47cfa33537d83)
+]
+---
+# Build the docker image (do it!)
+
+To build the docker image:
+
+```shell
+$ docker built -t docker-bamberg .
+```
+
+And start a container of it:
+
+```shell
+$ docker run -it --rm docker-bamberg /bin/bash
+```
+
+&lt;pre class=&quot;console&quot;&gt;
+Notice: Compiled catalog for 3e6c1f1c68d9.lan in environment production in 0.01 seconds
+Notice: Finished catalog run in 0.01 seconds
+root@3e6c1f1c68d9:/# ps axf
+  PID TTY      STAT   TIME COMMAND
+    1 ?        Ss     0:00 /bin/bash /entrypoint.sh /bin/bash
+  114 ?        S      0:00 /bin/bash
+  119 ?        R+     0:00  \_ ps axf
+root@3e6c1f1c68d9:/# exit
+[ &lt;span style=&quot;color:lime;&quot;&gt;ok&lt;/span&gt; ] Asking all remaining processes to terminate...done.
+[ &lt;span style=&quot;color:lime;&quot;&gt;ok&lt;/span&gt; ] All processes ended within 1 seconds...done.
+&lt;/pre&gt;
+---
+# Start a development container
+
+Now we start a container for development. We mount our local git directory
+as a volume into the container. This way we can edit the puppet module
+with our favorite editor and all tools available on our development box
+and apply the changes within the container.
+
+```shell
+$ docker run -it --rm \
+  --hostname docker-bamberg.de \
+  -v ~/development/puppet-docker_bamberg:/etc/puppet/modules/docker_bamberg \
+  docker-bamberg /bin/bash
+```
+
+&lt;pre class=&quot;console&quot;&gt;
+Notice: Compiled catalog for docker-bamberg.de in environment production in 0.02 seconds
+Notice: Finished catalog run in 0.09 seconds
+root@docker-bamberg:/#
+&lt;/pre&gt;
+
+Everytime we change something we can apply the changes with:
+
+```shell
+root@docker-bamberg:/# puppet apply /etc/puppet/manifests/
+```
+
+&lt;pre class=&quot;console&quot;&gt;
+Notice: Compiled catalog for docker-bamberg.de in environment production in 0.02 seconds
+Notice: Finished catalog run in 0.06 seconds
+&lt;/pre&gt;
+---
+# Define our mission goal (1/2)
+
+Befor we start with configuration details we want to specify what
+we want to achieve.
+
+Create a first feature `features/website.feature`:
+
+```gherkin
+Feature: Docker Bamberg website
+  The Docker Bamberg needs a website to publish presentations and
+  content on the internet.
+
+  Scenario: The Website must be accessible
+    Given the http URL http://docker-bamberg.de/
+    Given the http request method is GET
+    When the http request is sent
+    Then the http response must be successfull
+    And the http response content must be like Docker Bamberg
+```
+---
+# Define our mission goal (2/2)
+
+To load the Test::BDD::Infrastructure step definitions.
+Create `features/step_definitions/00use_steps.pl`:
+
+```perl
+#!perl
+use Test::BDD::Infrastructure;
+```
+.footnote[
+`benningm/puppet-docker_bamberg`:
+[8cdf38a](https://github.com/benningm/puppet-docker_bamberg/commit/8cdf38a9990b3e1c0292739a03a659253fbcd795)
+]
+---
+# Execute specification
+
+```shell
+root@docker-bamberg:/# pherkin /etc/puppet/modules/docker_bamberg/features/website.feature 
+```
+
+&lt;pre class=&quot;console&quot;&gt;
+  Docker Bamberg website
+    The Docker Bamberg needs a website to publish presentations and
+    content on the internet.
+
+    Scenario: The Website must be accessible
+      &lt;span style=&quot;color:lime;&quot;&gt;Given &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the http URL &lt;/span&gt;http://docker-bamberg.de/
+      &lt;span style=&quot;color:lime;&quot;&gt;Given &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the http request method is &lt;/span&gt;GET
+      &lt;span style=&quot;color:lime;&quot;&gt;When &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the http request is sent&lt;/span&gt;
+      &lt;span style=&quot;color:red;&quot;&gt;Then &lt;/span&gt;&lt;span style=&quot;color:red;&quot;&gt;the http response must be &lt;/span&gt;successfull
+        &lt;span style=&quot;color:red;&quot;&gt;step defined at /etc/puppet/modules/docker_bamberg/features/website.feature line 9.&lt;/span&gt;
+        &lt;span style=&quot;color:red;&quot;&gt;ok 1 - Starting to execute step: the http response must be successfull&lt;/span&gt;
+        &lt;span style=&quot;color:red;&quot;&gt;# response code is 500 Can&#39;t connect to docker-bamberg.de:80&lt;/span&gt;
+        &lt;span style=&quot;color:red;&quot;&gt;not ok 2 - successfull http response&lt;/span&gt;
+        &lt;span style=&quot;color:red;&quot;&gt;#   Failed test &#39;successfull http response&#39;&lt;/span&gt;
+        &lt;span style=&quot;color:red;&quot;&gt;#   at /usr/share/perl5/Test/BDD/Infrastructure/HTTP.pm line 67.&lt;/span&gt;
+        &lt;span style=&quot;color:red;&quot;&gt;1..2&lt;/span&gt;
+      &lt;span style=&quot;color:yellow;&quot;&gt;And the http response content must be like Docker Bamberg&lt;/span&gt;
+&lt;/pre&gt;
+
     </textarea>
     <script src="remark.min.js" type="text/javascript">
     </script>
