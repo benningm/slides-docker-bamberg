@@ -31,6 +31,16 @@
         background: #e7e8e2;
         border-radius: 5px;
       }
+      div.truncated-top code,div.truncated-top pre.console {
+        border-top: 2px dashed #859900;
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+      }
+      div.truncated-bottom code,div.truncated-bottom pre.console {
+        border-bottom: 2px dashed #859900;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+      }
       .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
       .remark-code-line-highlighted     { background-color: #373832; }
       li p { line-height: 1.25em; }
@@ -434,6 +444,10 @@ with correct return values to indicate failure/success.
 
 We still have to create `Puppetfile` which configures `librarian-puppet`
 and `manifest.pp` for puppet.
+.footnote[
+`benningm/docker-docker-bamberg`:
+[40a1dae](https://github.com/benningm/docker-docker-bamberg/commit/40a1daeba7dc0c93a04ceccf40f47cfa33537d83)
+]
 ---
 # Build the docker image (Puppetfile)
 
@@ -461,10 +475,6 @@ module which has no parameters.
 
 Create a git repository and push everything to your repository server.
 
-.footnote[
-`benningm/docker-docker-bamberg`:
-[40a1dae](https://github.com/benningm/docker-docker-bamberg/commit/40a1daeba7dc0c93a04ceccf40f47cfa33537d83)
-]
 ---
 # Build the docker image (do it!)
 
@@ -524,7 +534,7 @@ Notice: Compiled catalog for docker-bamberg.de in environment production in 0.02
 Notice: Finished catalog run in 0.06 seconds
 &lt;/pre&gt;
 ---
-# Define our mission goal (1/2)
+# Define our mission goal
 
 Befor we start with configuration details we want to specify what
 we want to achieve.
@@ -543,8 +553,12 @@ Feature: Docker Bamberg website
     Then the http response must be successfull
     And the http response content must be like Docker Bamberg
 ```
+.footnote[
+`benningm/puppet-docker_bamberg`:
+[8cdf38a](https://github.com/benningm/puppet-docker_bamberg/commit/8cdf38a9990b3e1c0292739a03a659253fbcd795)
+]
 ---
-# Define our mission goal (2/2)
+# Define our mission goal
 
 To load the Test::BDD::Infrastructure step definitions.
 Create `features/step_definitions/00use_steps.pl`:
@@ -553,10 +567,6 @@ Create `features/step_definitions/00use_steps.pl`:
 #!perl
 use Test::BDD::Infrastructure;
 ```
-.footnote[
-`benningm/puppet-docker_bamberg`:
-[8cdf38a](https://github.com/benningm/puppet-docker_bamberg/commit/8cdf38a9990b3e1c0292739a03a659253fbcd795)
-]
 ---
 # Execute specification
 
@@ -583,6 +593,402 @@ root@docker-bamberg:/# pherkin /etc/puppet/modules/docker_bamberg/features/websi
         &lt;span style=&quot;color:red;&quot;&gt;1..2&lt;/span&gt;
       &lt;span style=&quot;color:yellow;&quot;&gt;And the http response content must be like Docker Bamberg&lt;/span&gt;
 &lt;/pre&gt;
+---
+# Deployment of the content
+
+So we write a specification `features/content.feature` for that:
+
+.truncated-bottom[
+```gherkin
+Feature: Webcontent for the Docker Bamberg website
+  The Webcontent of the Docker Bamberg website is maintained
+  in a git repository and build with jekyll.
+
+  The git repository must be cloned and the website must be
+  generated with jekyll.
+
+  The repository clone is located at `/data/repo` and
+  the generated website content at `/data/htdocs`.
+
+  Scenario: Local clone of the git repository must exist
+    Given the directory /data/repo exists
+    Then the file type must be directory
+    And the directory must contain a file like _config.yml
+    And the directory must contain a file like index.html
+    And the directory must contain a file like feed.xml
+    And the directory must contain a file like .git
+```
+]
+.footnote[
+`benningm/puppet-docker_bamberg`:
+[7ff9a81](https://github.com/benningm/puppet-docker_bamberg/commit/7ff9a816ef939b37a766faaf28535b11d8e31ff8)
+]
+---
+# Deployment of the content
+
+.truncated-top[
+```gherkin
+  Scenario: A generated copy of the website must exist
+    Given the directory /data/htdocs exists
+    Then the file type must be directory
+    And the directory must contain a file like feed.xml
+    And the directory must contain a file like index.html
+    Given the file /data/htdocs/index.html exists
+    Then the files content must match Docker Bamberg
+```
+]
+---
+# Deployment of the content
+And again test results are red:
+
+&lt;pre class=&quot;console&quot;&gt;
+  Webcontent for the Docker Bamberg website
+    The Webcontent of the Docker Bamberg website is maintained
+    in a git repository and build with jekyll.
+    The git repository must be cloned and the website must be
+    generated with jekyll.
+    The repository clone is located at `/data/repo` and
+    the generated website content at `/data/htdocs`.
+
+    Scenario: Local clone of the git repository must exist
+      &lt;span style=&quot;color:red;&quot;&gt;Given &lt;/span&gt;&lt;span style=&quot;color:red;&quot;&gt;the directory &lt;/span&gt;/data/repo&lt;span style=&quot;color:red;&quot;&gt; exists&lt;/span&gt;
+        &lt;span style=&quot;color:red;&quot;&gt;step defined at /etc/puppet/modules/docker_bamberg/features/content.feature line 12.&lt;/span&gt;
+        &lt;span style=&quot;color:red;&quot;&gt;ok 1 - Starting to execute step: the directory /data/repo exists&lt;/span&gt;
+        &lt;span style=&quot;color:red;&quot;&gt;not ok 2 - the file /data/repo does not exist&lt;/span&gt;
+        &lt;span style=&quot;color:red;&quot;&gt;#   Failed test &#39;the file /data/repo does not exist&#39;&lt;/span&gt;
+        &lt;span style=&quot;color:red;&quot;&gt;#   at /usr/share/perl5/Test/BDD/Infrastructure/File.pm line 23.&lt;/span&gt;
+        &lt;span style=&quot;color:red;&quot;&gt;1..2&lt;/span&gt;
+      &lt;span style=&quot;color:yellow;&quot;&gt;Then the file type must be directory&lt;/span&gt;
+      &lt;span style=&quot;color:yellow;&quot;&gt;And the directory must contain a file like _config.yml&lt;/span&gt;
+&lt;/pre&gt;
+---
+# Deployment of the content
+
+Configure the deployment process in a puppet class `docker_bamberg::content` in `manifests/content.pp`:
+
+.truncated-bottom[
+```puppet
+class docker_bamberg::content {
+  package { 'jekyll':
+    ensure  => present,
+  }
+
+  file { '/data' :
+    ensure  => 'directory',
+  } ->
+  file { '/data/repo' :
+    ensure  => 'directory',
+  } ->
+  file { '/data/htdocs' :
+    ensure  => 'directory',
+  } ->
+```
+]
+---
+# Deployment of the content
+.truncated-top[
+```puppet
+  vcsrepo { '/data/repo':
+    ensure     => 'latest',
+    provider   => 'git',
+    source     => 'https://github.com/benningm/jekyll-docker-bamberg.de.git',
+  } ~>
+  exec { "generate-content":
+    command     => "jekyll build --destination /data/htdocs",
+    cwd         => '/data/repo',
+    path        => ["/bin", "/usr/bin"],
+    refreshonly => 'true',
+    creates     => '/data/htdocs/index.html',
+    user        => 'root',
+    require     => Package['jekyll'],
+  }
+}
+```
+]
+---
+# Deployment of the content
+
+We must include the new class within our modules main class:
+
+&lt;pre class=&quot;console&quot;&gt;
+&lt;span style=&quot;font-weight:bold;&quot;&gt;--- a/manifests/init.pp&lt;/span&gt;
+&lt;span style=&quot;font-weight:bold;&quot;&gt;+++ b/manifests/init.pp&lt;/span&gt;
+&lt;span style=&quot;color:aqua;&quot;&gt;@@ -25,4 +25,5 @@&lt;/span&gt;
+ # Copyright 2016 Markus Benning
+ #
+ class docker_bamberg {
+&lt;span style=&quot;color:lime;&quot;&gt;+&lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;  include docker_bamberg::content&lt;/span&gt;
+ }
+&lt;/pre&gt;
+
+If we now apply our configuration we get the following error message:
+
+&lt;pre class=&quot;console&quot;&gt;
+&lt;span style=&quot;color:red;font-weight:bold;&quot;&gt;Error: Puppet::Parser::AST::Resource failed with error ArgumentError: Invalid resource type vcsrepo at /etc/puppet/modules/docker_bamberg/manifests/content.pp:19 on node docker-bamberg.de
+Wrapped exception:
+Invalid resource type vcsrepo&lt;/span&gt;
+&lt;span style=&quot;color:red;font-weight:bold;&quot;&gt;Error: Puppet::Parser::AST::Resource failed with error ArgumentError: Invalid resource type vcsrepo at /etc/puppet/modules/docker_bamberg/manifests/content.pp:19 on node docker-bamberg.de&lt;/span&gt;
+&lt;/pre&gt;
+---
+# Deployment of the content
+
+The vcsrepo type we used is a extra puppet module we must depend on:
+
+&lt;pre class=&quot;console&quot;&gt;
+&lt;span style=&quot;font-weight:bold;&quot;&gt;--- a/metadata.json&lt;/span&gt;
+&lt;span style=&quot;font-weight:bold;&quot;&gt;+++ b/metadata.json&lt;/span&gt;
+&lt;span style=&quot;color:aqua;&quot;&gt;@@ -8,7 +8,8 @@&lt;/span&gt;
+   &amp;quot;project_page&amp;quot;: &amp;quot;https://github.com/benningm/puppet-docker_bamberg&amp;quot;,
+   &amp;quot;issues_url&amp;quot;: &amp;quot;https://github.com/benningm/puppet-docker_bamberg/issues&amp;quot;,
+   &amp;quot;dependencies&amp;quot;: [
+&lt;span style=&quot;color:red;&quot;&gt;-    {&amp;quot;name&amp;quot;:&amp;quot;puppetlabs-stdlib&amp;quot;,&amp;quot;version_requirement&amp;quot;:&amp;quot;&amp;gt;= 1.0.0&amp;quot;}&lt;/span&gt;
+&lt;span style=&quot;color:lime;&quot;&gt;+&lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;    {&amp;quot;name&amp;quot;:&amp;quot;puppetlabs-stdlib&amp;quot;,&amp;quot;version_requirement&amp;quot;:&amp;quot;&amp;gt;= 1.0.0&amp;quot;},&lt;/span&gt;
+&lt;span style=&quot;color:lime;&quot;&gt;+&lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;    {&amp;quot;name&amp;quot;:&amp;quot;puppetlabs-vcsrepo&amp;quot;,&amp;quot;version_requirement&amp;quot;:&amp;quot;&amp;gt;= 1.3.2&amp;quot;}&lt;/span&gt;
+   ]
+ }
+&lt;/pre&gt;
+---
+# Deployment of the content
+For now we just install the module with
+
+```shell
+root@docker-bamberg:~# puppet module install puppetlabs-vcsrepo
+```
+
+In the future `librarian-puppet` will do this for use, but in our case it also
+would re-install our `docker_bamberg` module which still has uncommited changes!
+
+If we now apply our configuration again and it works:
+
+```shell
+root@docker-bamberg:~# puppet apply /etc/puppet/manifests/
+Notice: Compiled catalog for docker-bamberg.de in environment production in 0.27 seconds
+Notice: /Stage[main]/Docker_bamberg::Content/File[/data]/ensure: created
+Notice: /Stage[main]/Docker_bamberg::Content/Package[jekyll]/ensure: ensure changed 'purged' to 'present'
+Notice: /Stage[main]/Docker_bamberg::Content/File[/data/repo]/ensure: created
+Notice: /Stage[main]/Docker_bamberg::Content/File[/data/htdocs]/ensure: created
+Notice: /Stage[main]/Docker_bamberg::Content/Vcsrepo[/data/repo]/ensure: Creating repository from latest
+Notice: /Stage[main]/Docker_bamberg::Content/Vcsrepo[/data/repo]/ensure: created
+Notice: /Stage[main]/Docker_bamberg::Content/Exec[generate-content]: Triggered 'refresh' from 1 events
+Notice: Finished catalog run in 23.96 seconds
+root@docker-bamberg:~# 
+```
+---
+# Deployment of the content
+
+Let's see what our tests say:
+
+```shell
+root@docker-bamberg:~# pherkin \
+  /etc/puppet/modules/docker_bamberg/features/content.feature
+```
+
+.truncated-top[
+&lt;pre class=&quot;console&quot;&gt;
+    Scenario: Local clone of the git repository must exist
+      &lt;span style=&quot;color:lime;&quot;&gt;Given &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the directory &lt;/span&gt;/data/repo&lt;span style=&quot;color:lime;&quot;&gt; exists&lt;/span&gt;
+      &lt;span style=&quot;color:lime;&quot;&gt;Then &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the file type must be directory&lt;/span&gt;
+      &lt;span style=&quot;color:lime;&quot;&gt;And &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the directory must contain &lt;/span&gt;a&lt;span style=&quot;color:lime;&quot;&gt; file like &lt;/span&gt;_config.yml
+      &lt;span style=&quot;color:lime;&quot;&gt;And &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the directory must contain &lt;/span&gt;a&lt;span style=&quot;color:lime;&quot;&gt; file like &lt;/span&gt;index.html
+      &lt;span style=&quot;color:lime;&quot;&gt;And &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the directory must contain &lt;/span&gt;a&lt;span style=&quot;color:lime;&quot;&gt; file like &lt;/span&gt;feed.xml
+      &lt;span style=&quot;color:lime;&quot;&gt;And &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the directory must contain &lt;/span&gt;a&lt;span style=&quot;color:lime;&quot;&gt; file like &lt;/span&gt;.git
+
+    Scenario: A generated copy of the website must exist
+      &lt;span style=&quot;color:lime;&quot;&gt;Given &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the directory &lt;/span&gt;/data/htdocs&lt;span style=&quot;color:lime;&quot;&gt; exists&lt;/span&gt;
+      &lt;span style=&quot;color:lime;&quot;&gt;Then &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the file type must be directory&lt;/span&gt;
+      &lt;span style=&quot;color:lime;&quot;&gt;And &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the directory must contain &lt;/span&gt;a&lt;span style=&quot;color:lime;&quot;&gt; file like &lt;/span&gt;feed.xml
+      &lt;span style=&quot;color:lime;&quot;&gt;And &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the directory must contain &lt;/span&gt;a&lt;span style=&quot;color:lime;&quot;&gt; file like &lt;/span&gt;index.html
+      &lt;span style=&quot;color:lime;&quot;&gt;Given &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the file &lt;/span&gt;/data/htdocs/index.html&lt;span style=&quot;color:lime;&quot;&gt; exists&lt;/span&gt;
+      &lt;span style=&quot;color:lime;&quot;&gt;Then &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the files content must &lt;/span&gt;match&lt;span style=&quot;color:lime;&quot;&gt; &lt;/span&gt;Docker Bamberg
+&lt;/pre&gt;
+]
+---
+# Webserver configuration
+
+We still need a HTTP webserver to serve the static pages to the network:
+
+```gherkin
+Feature: Webserver for docker bamberg
+  To serve the docker-bamberg.de website a webserver is required.
+  The nginx webserver will be used.
+
+  Scenario: nginx webserver must running
+    Given a parent process like ^nginx: is running
+    Then the uid of the process must be root
+    Then the gid of the process must be root
+    When there are at least 1 child processes
+    Then the uid of the child processes must be www-data
+    Then the gid of the child processes must be www-data
+```
+As always the test must fail first.
+.footnote[
+`benningm/puppet-docker_bamberg`:
+[0fd2b59](https://github.com/benningm/puppet-docker_bamberg/commit/0fd2b59f96f0d8b5a9414eed7dda7337cccdd52a)
+]
+---
+# Webserver configuration
+
+The puppet module `jfryman-nginx` will do the configuration of nginx for us.
+
+Again we add a dependecy on this module to our modules `metadata.json`:
+
+&lt;pre class=&quot;console&quot;&gt;
+&lt;span style=&quot;font-weight:bold;&quot;&gt;--- a/metadata.json&lt;/span&gt;
+&lt;span style=&quot;font-weight:bold;&quot;&gt;+++ b/metadata.json&lt;/span&gt;
+&lt;span style=&quot;color:aqua;&quot;&gt;@@ -9,7 +9,8 @@&lt;/span&gt;
+   &amp;quot;issues_url&amp;quot;: &amp;quot;https://github.com/benningm/puppet-docker_bamberg/issues&amp;quot;,
+   &amp;quot;dependencies&amp;quot;: [
+     {&amp;quot;name&amp;quot;:&amp;quot;puppetlabs-stdlib&amp;quot;,&amp;quot;version_requirement&amp;quot;:&amp;quot;&amp;gt;= 1.0.0&amp;quot;},
+&lt;span style=&quot;color:red;&quot;&gt;-    {&amp;quot;name&amp;quot;:&amp;quot;puppetlabs-vcsrepo&amp;quot;,&amp;quot;version_requirement&amp;quot;:&amp;quot;&amp;gt;= 1.3.2&amp;quot;}&lt;/span&gt;
+&lt;span style=&quot;color:lime;&quot;&gt;+&lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;    {&amp;quot;name&amp;quot;:&amp;quot;puppetlabs-vcsrepo&amp;quot;,&amp;quot;version_requirement&amp;quot;:&amp;quot;&amp;gt;= 1.3.2&amp;quot;},&lt;/span&gt;
+&lt;span style=&quot;color:lime;&quot;&gt;+&lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;    {&amp;quot;name&amp;quot;:&amp;quot;jfryman-nginx&amp;quot;,&amp;quot;version_requirement&amp;quot;:&amp;quot;&amp;gt;= 0.3.0&amp;quot;}&lt;/span&gt;
+   ]
+ }
+&lt;/pre&gt;
+
+For development we just install it for reasons mentioned before:
+
+```shell
+root@docker-bamberg:~# puppet module install jfryman-nginx
+```
+---
+# Webserver configuration
+
+Thanks to the `nginx` puppet module the configuration is easy:
+
+```puppet
+class docker_bamberg::webserver {
+  require docker_bamberg::content
+
+  class { 'nginx': }
+  nginx::resource::vhost { 'docker-bamberg.de':
+      www_root => '/data/htdocs',
+  }
+}
+```
+---
+# Webserver configuration
+
+Also include the webserver class in the main class:
+
+&lt;pre class=&quot;console&quot;&gt;
+&lt;span style=&quot;font-weight:bold;&quot;&gt;--- a/manifests/init.pp&lt;/span&gt;
+&lt;span style=&quot;font-weight:bold;&quot;&gt;+++ b/manifests/init.pp&lt;/span&gt;
+&lt;span style=&quot;color:aqua;&quot;&gt;@@ -26,4 +26,5 @@&lt;/span&gt;
+ #
+ class docker_bamberg {
+   include docker_bamberg::content
+&lt;span style=&quot;color:lime;&quot;&gt;+&lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;  include docker_bamberg::webserver&lt;/span&gt;
+ }
+&lt;/pre&gt;
+
+Apply the configuration within our development container:
+
+```shell
+root@docker-bamberg:~# puppet apply /etc/puppet/manifests/
+```
+---
+# Webserver configuration
+
+The test should pass now:
+
+```shell
+root@docker-bamberg:~# pherkin \
+  /etc/puppet/modules/docker_bamberg/features/webserver.feature 
+```
+&lt;pre class=&quot;console&quot;&gt;
+  Webserver for docker bamberg
+    To serve the docker-bamberg.de website a webserver is required.
+    The nginx webserver will be used.
+
+    Scenario: nginx webserver must running
+      &lt;span style=&quot;color:lime;&quot;&gt;Given &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;a parent process like &lt;/span&gt;^nginx:&lt;span style=&quot;color:lime;&quot;&gt; is running&lt;/span&gt;
+      &lt;span style=&quot;color:lime;&quot;&gt;Then &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the uid of the process must be &lt;/span&gt;root
+      &lt;span style=&quot;color:lime;&quot;&gt;Then &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the gid of the process must be &lt;/span&gt;root
+      &lt;span style=&quot;color:lime;&quot;&gt;When &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;there are &lt;/span&gt;at least&lt;span style=&quot;color:lime;&quot;&gt; &lt;/span&gt;1&lt;span style=&quot;color:lime;&quot;&gt; child processes&lt;/span&gt;
+      &lt;span style=&quot;color:lime;&quot;&gt;Then &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the uid of the child processes must be &lt;/span&gt;www-data
+      &lt;span style=&quot;color:lime;&quot;&gt;Then &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the gid of the child processes must be &lt;/span&gt;www-data
+&lt;/pre&gt;
+---
+# Mission accomplished!
+
+Also our `website.feature` test should pass now:
+
+```shell
+root@docker-bamberg:~# pherkin \
+  /etc/puppet/modules/docker_bamberg/features/website.feature 
+```
+
+&lt;pre class=&quot;console&quot;&gt;
+  Docker Bamberg website
+    The Docker Bamberg needs a website to publish presentations and
+    content on the internet.
+
+    Scenario: The Website must be accessible
+      &lt;span style=&quot;color:lime;&quot;&gt;Given &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the http URL &lt;/span&gt;http://docker-bamberg.de/
+      &lt;span style=&quot;color:lime;&quot;&gt;Given &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the http request method is &lt;/span&gt;GET
+      &lt;span style=&quot;color:lime;&quot;&gt;When &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the http request is sent&lt;/span&gt;
+      &lt;span style=&quot;color:lime;&quot;&gt;Then &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the http response must be &lt;/span&gt;successfull
+      &lt;span style=&quot;color:lime;&quot;&gt;And &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the http response content must be like &lt;/span&gt;Docker Bamberg
+&lt;/pre&gt;
+---
+# Rebuild the Dockerimage
+
+Now make sure that you commited and pushed all the changes to the git repository.
+
+Then rebuild the docker image to contain all changes we made:
+
+```shell
+$ docker built -t docker-bamberg .
+```
+
+If you now start up a container the nginx process should already be running:
+
+```shell
+$ docker run -it --rm --hostname docker-bamberg.de docker-bamberg /bin/bash
+```
+
+```shell
+root@docker-bamberg:/# ps axf
+  PID TTY      STAT   TIME COMMAND
+    1 ?        Ss     0:00 /bin/bash /entrypoint.sh /bin/bash
+  225 ?        Ss     0:00 nginx: master process /usr/sbin/nginx -c /etc/nginx/nginx.co
+  226 ?        S      0:00  \_ nginx: worker process                   
+  262 ?        S      0:00 /bin/bash
+  263 ?        R+     0:00  \_ ps axf
+```
+---
+class: center, middle
+# Goodies
+---
+# Test the Dockerimage
+
+Instead of shell you can of course just run the tests:
+
+```shell
+$ docker run -it --rm --hostname docker-bamberg.de docker-bamberg \
+  pherkin /etc/puppet/modules/docker_bamberg/features/
+```
+
+.truncated-bottom[
+&lt;pre class=&quot;console&quot;&gt;
+&lt;span style=&quot;color:red;font-weight:bold;&quot;&gt;Warning: Config file /etc/puppet/hiera.yaml not found, using Hiera defaults&lt;/span&gt;
+Notice: Compiled catalog for docker-bamberg.de in environment production in 0.92 seconds
+Notice: /Stage[main]/Nginx::Service/Service[nginx]/ensure: ensure changed &#39;stopped&#39; to &#39;running&#39;
+Notice: Finished catalog run in 4.81 seconds
+
+  Docker Bamberg website
+    The Docker Bamberg needs a website to publish presentations and
+    content on the internet.
+
+    Scenario: The Website must be accessible
+      &lt;span style=&quot;color:lime;&quot;&gt;Given &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the http URL &lt;/span&gt;http://docker-bamberg.de/
+      &lt;span style=&quot;color:lime;&quot;&gt;Given &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the http request method is &lt;/span&gt;GET
+      &lt;span style=&quot;color:lime;&quot;&gt;When &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the http request is sent&lt;/span&gt;
+      &lt;span style=&quot;color:lime;&quot;&gt;Then &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the http response must be &lt;/span&gt;successfull
+      &lt;span style=&quot;color:lime;&quot;&gt;And &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the http response content must be like &lt;/span&gt;Docker Bamberg
+&lt;/pre&gt;
+]
 
     </textarea>
     <script src="remark.min.js" type="text/javascript">
