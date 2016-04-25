@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Test Report">
+
+    <title>Test Report</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <style type="text/css">
+    .step-name { display: inline; text-align: left; }
+    .step-line { display: inline; text-align: left; color: grey; }
+    .step-result { float: right; display: inline; color: black; }
+    .panel-heading a { color: black; }
+    .panel-heading a:before {
+        font-family: 'Glyphicons Halflings';
+        content: "\e114";    
+     }
+     .panel-heading a.collapsed:before {
+         content: "\e080";
+     }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+
+      <div class="page-header"><h1>Test Report</h1></div>
+
+      <h2>Document meta information</h2>
+      <table class="table table-bordered">
+      	<thead>
+	  <th>Key</th>
+	  <th>Value</th>
+	</thead>
+	<tbody>
+	  <tr><td>Hostname</td><td>docker-bamberg.de</td></tr>
+	  <tr><td>Time</td><td>Mon Apr 25 19:17:31 2016</td></tr>
+	  <tr><td>Command</td><td>/usr/bin/pherkin -o Html /etc/puppet/modules/docker_bamberg/features</td></tr>
+	</tbody>
+      </table>
+
+      <h2>Summary</h2>
+<table class="table table-bordered">
+<thead>
+  <th>Status</th>
+  <th>Count</th>
+</thead>
+<tbody>
+  <tr class="success">
+  	<td>Passed</td><td>23</td>
+  </tr>
+  <tr class="">
+  	<td>Failed</td><td>0</td>
+  </tr>
+  <tr class="">
+  	<td>Pending</td><td>0</td>
+  </tr>
+  <tr class="">
+  	<td>Skipped</td><td>0</td>
+  </tr>
+</tbody>
+</table>
+      <h2>Table of Content</h2>
+<ul>
+  <li><a href="#feature-44968272">Docker Bamberg website</a>	<button type="button" class="btn btn-xs btn-success" data-toggle="tooltip" data-placement="right" title="passed">5</button>
+				</li>
+  <ul>
+      <li><a href="#scenario-51591376">The Website must be accessible</a>	<button type="button" class="btn btn-xs btn-success" data-toggle="tooltip" data-placement="right" title="passed">5</button>
+				</li>
+    </ul>
+  <li><a href="#feature-51553288">Webcontent for the Docker Bamberg website</a>	<button type="button" class="btn btn-xs btn-success" data-toggle="tooltip" data-placement="right" title="passed">12</button>
+				</li>
+  <ul>
+      <li><a href="#scenario-58136272">Local clone of the git repository must exist</a>	<button type="button" class="btn btn-xs btn-success" data-toggle="tooltip" data-placement="right" title="passed">6</button>
+				</li>
+      <li><a href="#scenario-15006040">A generated copy of the website must exist</a>	<button type="button" class="btn btn-xs btn-success" data-toggle="tooltip" data-placement="right" title="passed">6</button>
+				</li>
+    </ul>
+  <li><a href="#feature-58136464">Webserver for docker bamberg</a>	<button type="button" class="btn btn-xs btn-success" data-toggle="tooltip" data-placement="right" title="passed">6</button>
+				</li>
+  <ul>
+      <li><a href="#scenario-58158688">nginx webserver must running</a>	<button type="button" class="btn btn-xs btn-success" data-toggle="tooltip" data-placement="right" title="passed">6</button>
+				</li>
+    </ul>
+</ul>
+
+
+        <h2 id="feature-44968272">Docker Bamberg website <small>(/etc/puppet/modules/docker_bamberg/features/website.feature) 	<button type="button" class="btn  btn-success" data-toggle="tooltip" data-placement="right" title="passed">5</button>
+				</small></h2>
+<pre><code>The Docker Bamberg needs a website to publish presentations and
+content on the internet.</code></pre>
+    <h3 id="scenario-51591376">The Website must be accessible</h3>
+<div class="panel-group" id="scenario-51591376-accordion">
+<div class="panel panel-success">
+	<div class="panel-heading"><a data-toggle="collapse" data-target="#step-1139199-body">
+<b class="text-success">Given</b> the http URL http://docker-bamberg.de/
+
+<div class="step-line">(line: 6)</div>
+<div class="step-result">passed</div>
+	</a></div>
+	<div id="step-1139199-body" class="panel-collapse collapse"><div class="panel-body">
+<h4>Test Output:</h4>
+<pre>ok 1 - Starting to execute step: the http URL http://docker-bamberg.de/
+1..1
+</pre>
+	</div></div>
+</div>
+<div class="panel panel-success">
+	<div class="panel-heading"><a data-toggle="collapse" data-target="#step-261443-body">
+<b class="text-success">Given</b> the http request method is GET
+
+<div class="step-line">(line: 7)</div>
+<div class="step-result">passed</div>
+	</a></div>
+	<div id="step-261443-body" class="panel-collapse collapse"><div class="panel-body">
+<h4>Test Output:</h4>
+<pre>ok 1 - Starting to execute step: the http request method is GET
+1..1
+</pre>
+	</div></div>
+</div>
+<div class="panel panel-success">
+	<div class="panel-heading"><a data-toggle="collapse" data-target="#step-6516862-body">
+<b class="text-info">When</b> the http request is sent
+
+<div class="step-line">(line: 8)</div>
+<div class="step-result">passed</div>
+	</a></div>
+	<div id="step-6516862-body" class="panel-collapse collapse"><div class="panel-body">
+<h4>Test Output:</h4>
+<pre>ok 1 - Starting to execute step: the http request is sent
+1..1
+</pre>
+	</div></div>
+</div>
+<div class="panel panel-success">
+	<div class="panel-heading"><a data-toggle="collapse" data-target="#step-2775019-body">
+<b class="text-warning">Then</b> the http response must be successfull
+
+<div class="step-line">(line: 9)</div>
+<div class="step-result">passed</div>
+	</a></div>
+	<div id="step-2775019-body" class="panel-collapse collapse"><div class="panel-body">
+<h4>Test Output:</h4>
+<pre>ok 1 - Starting to execute step: the http response must be successfull
+# response code is 200 OK
+ok 2 - successfull http response
+1..2
+</pre>
+	</div></div>
+</div>
+<div class="panel panel-success">
+	<div class="panel-heading"><a data-toggle="collapse" data-target="#step-3506831-body">
+<b class="text-warning">And</b> the http response content must be like Docker Bamberg
+
+<div class="step-line">(line: 10)</div>
+<div class="step-result">passed</div>
+	</a></div>
+	<div id="step-3506831-body" class="panel-collapse collapse"><div class="panel-body">
+<h4>Test Output:</h4>
+<pre>ok 1 - Starting to execute step: the http response content must be like Docker Bamberg
+ok 2 - the content must be like Docker Bamberg
+1..2
+</pre>
+	</div></div>
+</div>
+</div>
+        <h2 id="feature-51553288">Webcontent for the Docker Bamberg website <small>(/etc/puppet/modules/docker_bamberg/features/content.feature) 	<button type="button" class="btn  btn-success" data-toggle="tooltip" data-placement="right" title="passed">12</button>
+				</small></h2>
+<pre><code>The Webcontent of the Docker Bamberg website is maintained
+in a git repository and build with jekyll.
+The git repository must be cloned and the website must be
+generated with jekyll.
+The repository clone is located at `/data/repo` and
+the generated website content at `/data/htdocs`.</code></pre>
+    <h3 id="scenario-58136272">Local clone of the git repository must exist</h3>
+<div class="panel-group" id="scenario-58136272-accordion">
+<div class="panel panel-success">
+	<div class="panel-heading"><a data-toggle="collapse" data-target="#step-138887-body">
+<b class="text-success">Given</b> the directory /data/repo exists
+
+<div class="step-line">(line: 12)</div>
+<div class="step-result">passed</div>
+	</a></div>
+	<div id="step-138887-body" class="panel-collapse collapse"><div class="panel-body">
+<h4>Test Output:</h4>
+<pre>ok 1 - Starting to execute step: the directory /data/repo exists
+1..1
+</pre>
+	</div></div>
+</div>
+<div class="panel panel-success">
+	<div class="panel-heading"><a data-toggle="collapse" data-target="#step-2845580-body">
+<b class="text-warning">Then</b> the file type must be directory
+
+<div class="step-line">(line: 13)</div>
+<div class="step-result">passed</div>
+	</a></div>
+	<div id="step-2845580-body" class="panel-collapse collapse"><div class="panel-body">
+<h4>Test Output:</h4>
+<pre>ok 1 - Starting to execute step: the file type must be directory
+ok 2 - file /data/repo must be a directory
+1..2
+</pre>
+	</div></div>
+</div>
+<div class="panel panel-success">
+	<div class="panel-heading"><a data-toggle="collapse" data-target="#step-3623936-body">
+<b class="text-warning">And</b> the directory must contain a file like _config.yml
+
+<div class="step-line">(line: 14)</div>
+<div class="step-result">passed</div>
+	</a></div>
+	<div id="step-3623936-body" class="panel-collapse collapse"><div class="panel-body">
+<h4>Test Output:</h4>
+<pre>ok 1 - Starting to execute step: the directory must contain a file like _config.yml
+# file matched: _config.yml
+ok 2 - a file in the directory must match _config.yml
+1..2
+</pre>
+	</div></div>
+</div>
+<div class="panel panel-success">
+	<div class="panel-heading"><a data-toggle="collapse" data-target="#step-164137-body">
+<b class="text-warning">And</b> the directory must contain a file like index.html
+
+<div class="step-line">(line: 15)</div>
+<div class="step-result">passed</div>
+	</a></div>
+	<div id="step-164137-body" class="panel-collapse collapse"><div class="panel-body">
+<h4>Test Output:</h4>
+<pre>ok 1 - Starting to execute step: the directory must contain a file like index.html
+# file matched: index.html
+ok 2 - a file in the directory must match index.html
+1..2
+</pre>
+	</div></div>
+</div>
+<div class="panel panel-success">
+	<div class="panel-heading"><a data-toggle="collapse" data-target="#step-2138132-body">
+<b class="text-warning">And</b> the directory must contain a file like feed.xml
+
+<div class="step-line">(line: 16)</div>
+<div class="step-result">passed</div>
+	</a></div>
+	<div id="step-2138132-body" class="panel-collapse collapse"><div class="panel-body">
+<h4>Test Output:</h4>
+<pre>ok 1 - Starting to execute step: the directory must contain a file like feed.xml
+# file matched: feed.xml
+ok 2 - a file in the directory must match feed.xml
+1..2
+</pre>
+	</div></div>
+</div>
+<div class="panel panel-success">
+	<div class="panel-heading"><a data-toggle="collapse" data-target="#step-2154019-body">
+<b class="text-warning">And</b> the directory must contain a file like .git
+
+<div class="step-line">(line: 17)</div>
+<div class="step-result">passed</div>
+	</a></div>
+	<div id="step-2154019-body" class="panel-collapse collapse"><div class="panel-body">
+<h4>Test Output:</h4>
+<pre>ok 1 - Starting to execute step: the directory must contain a file like .git
+# file matched: .git
+ok 2 - a file in the directory must match .git
+1..2
+</pre>
+	</div></div>
+</div>
+</div>
+    <h3 id="scenario-15006040">A generated copy of the website must exist</h3>
+<div class="panel-group" id="scenario-15006040-accordion">
+<div class="panel panel-success">
+	<div class="panel-heading"><a data-toggle="collapse" data-target="#step-1618657-body">
+<b class="text-success">Given</b> the directory /data/htdocs exists
+
+<div class="step-line">(line: 20)</div>
+<div class="step-result">passed</div>
+	</a></div>
+	<div id="step-1618657-body" class="panel-collapse collapse"><div class="panel-body">
+<h4>Test Output:</h4>
+<pre>ok 1 - Starting to execute step: the directory /data/htdocs exists
+1..1
+</pre>
+	</div></div>
+</div>
+<div class="panel panel-success">
+	<div class="panel-heading"><a data-toggle="collapse" data-target="#step-3167876-body">
+<b class="text-warning">Then</b> the file type must be directory
+
+<div class="step-line">(line: 21)</div>
+<div class="step-result">passed</div>
+	</a></div>
+	<div id="step-3167876-body" class="panel-collapse collapse"><div class="panel-body">
+<h4>Test Output:</h4>
+<pre>ok 1 - Starting to execute step: the file type must be directory
+ok 2 - file /data/htdocs must be a directory
+1..2
+</pre>
+	</div></div>
+</div>
+<div class="panel panel-success">
+	<div class="panel-heading"><a data-toggle="collapse" data-target="#step-868-body">
+<b class="text-warning">And</b> the directory must contain a file like feed.xml
+
+<div class="step-line">(line: 22)</div>
+<div class="step-result">passed</div>
+	</a></div>
+	<div id="step-868-body" class="panel-collapse collapse"><div class="panel-body">
+<h4>Test Output:</h4>
+<pre>ok 1 - Starting to execute step: the directory must contain a file like feed.xml
+# file matched: feed.xml
+ok 2 - a file in the directory must match feed.xml
+1..2
+</pre>
+	</div></div>
+</div>
+<div class="panel panel-success">
+	<div class="panel-heading"><a data-toggle="collapse" data-target="#step-197950-body">
+<b class="text-warning">And</b> the directory must contain a file like index.html
+
+<div class="step-line">(line: 23)</div>
+<div class="step-result">passed</div>
+	</a></div>
+	<div id="step-197950-body" class="panel-collapse collapse"><div class="panel-body">
+<h4>Test Output:</h4>
+<pre>ok 1 - Starting to execute step: the directory must contain a file like index.html
+# file matched: index.html
+ok 2 - a file in the directory must match index.html
+1..2
+</pre>
+	</div></div>
+</div>
+<div class="panel panel-success">
+	<div class="panel-heading"><a data-toggle="collapse" data-target="#step-3548953-body">
+<b class="text-success">Given</b> the file /data/htdocs/index.html exists
+
+<div class="step-line">(line: 24)</div>
+<div class="step-result">passed</div>
+	</a></div>
+	<div id="step-3548953-body" class="panel-collapse collapse"><div class="panel-body">
+<h4>Test Output:</h4>
+<pre>ok 1 - Starting to execute step: the file /data/htdocs/index.html exists
+1..1
+</pre>
+	</div></div>
+</div>
+<div class="panel panel-success">
+	<div class="panel-heading"><a data-toggle="collapse" data-target="#step-9391911-body">
+<b class="text-warning">Then</b> the files content must match Docker Bamberg
+
+<div class="step-line">(line: 25)</div>
+<div class="step-result">passed</div>
+	</a></div>
+	<div id="step-9391911-body" class="panel-collapse collapse"><div class="panel-body">
+<h4>Test Output:</h4>
+<pre>ok 1 - Starting to execute step: the files content must match Docker Bamberg
+ok 2 - files content must match Docker Bamberg
+1..2
+</pre>
+	</div></div>
+</div>
+</div>
+        <h2 id="feature-58136464">Webserver for docker bamberg <small>(/etc/puppet/modules/docker_bamberg/features/webserver.feature) 	<button type="button" class="btn  btn-success" data-toggle="tooltip" data-placement="right" title="passed">6</button>
+				</small></h2>
+<pre><code>To serve the docker-bamberg.de website a webserver is required.
+The nginx webserver will be used.</code></pre>
+    <h3 id="scenario-58158688">nginx webserver must running</h3>
+<div class="panel-group" id="scenario-58158688-accordion">
+<div class="panel panel-success">
+	<div class="panel-heading"><a data-toggle="collapse" data-target="#step-5063777-body">
+<b class="text-success">Given</b> a parent process like ^nginx: is running
+
+<div class="step-line">(line: 6)</div>
+<div class="step-result">passed</div>
+	</a></div>
+	<div id="step-5063777-body" class="panel-collapse collapse"><div class="panel-body">
+<h4>Test Output:</h4>
+<pre>ok 1 - Starting to execute step: a parent process like ^nginx: is running
+ok 2 - parent process of ^nginx: must be running
+1..2
+</pre>
+	</div></div>
+</div>
+<div class="panel panel-success">
+	<div class="panel-heading"><a data-toggle="collapse" data-target="#step-8878843-body">
+<b class="text-warning">Then</b> the uid of the process must be root
+
+<div class="step-line">(line: 7)</div>
+<div class="step-result">passed</div>
+	</a></div>
+	<div id="step-8878843-body" class="panel-collapse collapse"><div class="panel-body">
+<h4>Test Output:</h4>
+<pre>ok 1 - Starting to execute step: the uid of the process must be root
+ok 2 - uid of process must be 0
+1..2
+</pre>
+	</div></div>
+</div>
+<div class="panel panel-success">
+	<div class="panel-heading"><a data-toggle="collapse" data-target="#step-7314895-body">
+<b class="text-warning">Then</b> the gid of the process must be root
+
+<div class="step-line">(line: 8)</div>
+<div class="step-result">passed</div>
+	</a></div>
+	<div id="step-7314895-body" class="panel-collapse collapse"><div class="panel-body">
+<h4>Test Output:</h4>
+<pre>ok 1 - Starting to execute step: the gid of the process must be root
+ok 2 - gid of process must be 0
+1..2
+</pre>
+	</div></div>
+</div>
+<div class="panel panel-success">
+	<div class="panel-heading"><a data-toggle="collapse" data-target="#step-8984484-body">
+<b class="text-info">When</b> there are at least 1 child processes
+
+<div class="step-line">(line: 9)</div>
+<div class="step-result">passed</div>
+	</a></div>
+	<div id="step-8984484-body" class="panel-collapse collapse"><div class="panel-body">
+<h4>Test Output:</h4>
+<pre>ok 1 - Starting to execute step: there are at least 1 child processes
+ok 2 - &gt;= 1 child processes of parent pid 228
+1..2
+</pre>
+	</div></div>
+</div>
+<div class="panel panel-success">
+	<div class="panel-heading"><a data-toggle="collapse" data-target="#step-4545566-body">
+<b class="text-warning">Then</b> the uid of the child processes must be www-data
+
+<div class="step-line">(line: 10)</div>
+<div class="step-result">passed</div>
+	</a></div>
+	<div id="step-4545566-body" class="panel-collapse collapse"><div class="panel-body">
+<h4>Test Output:</h4>
+<pre>ok 1 - Starting to execute step: the uid of the child processes must be www-data
+ok 2 - uid of process must be 33
+1..2
+</pre>
+	</div></div>
+</div>
+<div class="panel panel-success">
+	<div class="panel-heading"><a data-toggle="collapse" data-target="#step-2034038-body">
+<b class="text-warning">Then</b> the gid of the child processes must be www-data
+
+<div class="step-line">(line: 11)</div>
+<div class="step-result">passed</div>
+	</a></div>
+	<div id="step-2034038-body" class="panel-collapse collapse"><div class="panel-body">
+<h4>Test Output:</h4>
+<pre>ok 1 - Starting to execute step: the gid of the child processes must be www-data
+ok 2 - gid of process must be 33
+1..2
+</pre>
+	</div></div>
+</div>
+</div>
+
+    </div> <!-- /container -->
+  </body>
+</html>

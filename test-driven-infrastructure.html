@@ -602,7 +602,7 @@ So we write a specification `features/content.feature` for that:
 ```gherkin
 Feature: Webcontent for the Docker Bamberg website
   The Webcontent of the Docker Bamberg website is maintained
-  in a git repository and build with jekyll.
+  in a git repository and built with jekyll.
 
   The git repository must be cloned and the website must be
   generated with jekyll.
@@ -644,7 +644,7 @@ And again test results are red:
 &lt;pre class=&quot;console&quot;&gt;
   Webcontent for the Docker Bamberg website
     The Webcontent of the Docker Bamberg website is maintained
-    in a git repository and build with jekyll.
+    in a git repository and built with jekyll.
     The git repository must be cloned and the website must be
     generated with jekyll.
     The repository clone is located at `/data/repo` and
@@ -989,6 +989,66 @@ Notice: Finished catalog run in 4.81 seconds
       &lt;span style=&quot;color:lime;&quot;&gt;And &lt;/span&gt;&lt;span style=&quot;color:lime;&quot;&gt;the http response content must be like &lt;/span&gt;Docker Bamberg
 &lt;/pre&gt;
 ]
+---
+# Monitoring a running container
+
+You can also run the tests on a running container:
+
+```shell
+$ docker exec -it 6329f2b36bc0 \
+  pherkin /etc/puppet/modules/docker_bamberg/features/
+```
+
+The output should be the same.
+---
+# Nagios test integration
+
+To integrate the tests within your monitoring use the nagios-style
+test output of the `check_pherkin` tool:
+
+```shell
+$ docker exec 6329f2b36bc0 \
+  check_pherkin /etc/puppet/modules/docker_bamberg/features/
+```
+
+&lt;pre class=&quot;console&quot;&gt;
+OK - all 4 scenarios passed
+&lt;/pre&gt;
+
+Options are identical to `pherkin` usage.
+
+If you have a lot of tests you may consider tagging your tests
+and select only certain tags with the `-t` option.
+---
+# Generate a HTML test report
+
+If you need to share your test results with others a HTML report
+will be very handy. Use the Html output module:
+
+```shell
+$ docker exec 6329f2b36bc0 \
+  pherkin -o Html /etc/puppet/modules/docker_bamberg/features/ > report.html
+```
+
+&lt;iframe style=&quot;margin:0;padding:0;width:100%;height:300px;border-radius: 5px;border:1px solid;&quot; src=&quot;media/docker-bamberg-report.html&quot;&gt;&lt;/iframe&gt;
+---
+class: center, middle
+
+# That's all folks (for now)!
+---
+# References
+
+* [Markus Benning Blog](https://markusbenning.de/blog/)
+* Docker-Image: puppet-base
+ * DockerHub: [benningm/puppet-base](https://hub.docker.com/r/benningm/puppet-base/)
+ * Github: [benningm/docker-puppet-base](https://github.com/benningm/docker-puppet-base)
+* Example
+ * Github: [benningm/jekyll-docker-bamberg.de](https://github.com/benningm/jekyll-docker-bamberg.de)
+ * Github: [benningm/docker-docker-bamberg](https://github.com/benningm/docker-docker-bamberg)
+ * Github: [benningm/puppet-docker_bamberg](https://github.com/benningm/puppet-docker_bamberg)
+* This presentation, built with [remark.js](http://remarkjs.com/#1)
+ * View at: https://markusbenning.de/TODO
+ * GitHub: [benningm/slides-docker-bamberg](https://github.com/benningm/slides-docker-bamberg)
 
     </textarea>
     <script src="remark.min.js" type="text/javascript">
